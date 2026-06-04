@@ -105,56 +105,78 @@ const FAQS = [
   },
 ];
 
+const CarCanvas = lazy(() => import("../components/home/CarCanvas"));
+
 export default function Home() {
   const { isAuthenticated } = useAuth();
   return (
     <div>
       {/* Hero */}
-      <section className="relative bg-gradient-to-br from-gray-950 via-black to-gray-950 text-white overflow-hidden">
+      <section className="relative bg-gradient-to-br from-gray-950 via-black to-gray-950 text-white overflow-hidden min-h-[85vh] lg:min-h-[90vh] flex items-center">
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_30%_50%,white,transparent_60%)] pointer-events-none" />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="max-w-3xl"
-          >
-            <span className="inline-block bg-yellow-400/10 text-yellow-300 text-sm font-medium px-4 py-1.5 rounded-full mb-4 border border-yellow-400/30">
-              Pakistan's #1 Car Rental Platform
-            </span>
-            <h1 className="text-5xl md:text-6xl font-extrabold leading-tight mb-6">
-              Drive Your Dream Car <span className="text-amber-400">Today</span>
-            </h1>
-            <p className="text-xl text-gray-300 mb-8 leading-relaxed">
-              Choose from 500+ premium vehicles. Transparent pricing,
-              professional drivers, instant booking — available across 20+
-              cities.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link
-                to="/cars"
-                className="btn-primary text-base py-3 px-8"
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-24 w-full">
+          <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              className="relative z-10 text-center lg:text-left"
+            >
+              <span className="inline-block bg-yellow-400/10 text-yellow-300 text-xs sm:text-sm font-medium px-3 sm:px-4 py-1 rounded-full mb-4 border border-yellow-400/30">
+                Pakistan's #1 Car Rental Platform
+              </span>
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.1] mb-6">
+                Drive Your Dream{" "}
+                <span className="text-amber-400">Car Today</span>
+              </h1>
+              <p className="text-base sm:text-lg md:text-xl text-gray-300 mb-8 leading-relaxed max-w-xl mx-auto lg:mx-0">
+                Choose from 500+ premium vehicles. Transparent pricing,
+                professional drivers, instant booking — available across 20+
+                cities.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 mb-4 lg:mb-0 justify-center lg:justify-start">
+                <Link
+                  to="/cars"
+                  className="btn-primary text-base py-3 px-8 text-center"
+                >
+                  Browse Cars
+                </Link>
+                {!isAuthenticated ? (
+                  <Link
+                    to="/register"
+                    className="btn-outline border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black text-base py-3 px-8 text-center"
+                  >
+                    Get Started Free
+                  </Link>
+                ) : (
+                  <Link
+                    to="/dashboard"
+                    className="btn-outline border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black text-base py-3 px-8 text-center"
+                  >
+                    My Dashboard
+                  </Link>
+                )}
+              </div>
+            </motion.div>
+
+            {/* 3D Car Model */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1, delay: 0.2 }}
+              className="relative w-full overflow-visible"
+            >
+              <Suspense
+                fallback={
+                  <div className="h-[400px] flex items-center justify-center">
+                    <div className="w-12 h-12 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
+                  </div>
+                }
               >
-                Browse Cars
-              </Link>
-              {!isAuthenticated && (
-                <Link
-                  to="/register"
-                  className="btn-outline border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black text-base py-3 px-8"
-                >
-                  Get Started Free
-                </Link>
-              )}
-              {isAuthenticated && (
-                <Link
-                  to="/dashboard"
-                  className="btn-outline border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black text-base py-3 px-8"
-                >
-                  My Dashboard
-                </Link>
-              )}
-            </div>
-          </motion.div>
+                <CarCanvas />
+              </Suspense>
+            </motion.div>
+          </div>
         </div>
       </section>
 
@@ -174,9 +196,7 @@ export default function Home() {
                 <p className="text-3xl font-extrabold text-yellow-400">
                   {s.value}
                 </p>
-                <p className="text-gray-400 text-sm mt-1">
-                  {s.label}
-                </p>
+                <p className="text-gray-400 text-sm mt-1">{s.label}</p>
               </motion.div>
             ))}
           </div>
@@ -208,12 +228,8 @@ export default function Home() {
                 <div className="w-14 h-14 bg-gradient-to-br from-yellow-400 to-yellow-600 text-black rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-yellow-900/30">
                   <item.icon size={24} />
                 </div>
-                <h3 className="font-bold text-white mb-2">
-                  {item.title}
-                </h3>
-                <p className="text-sm text-gray-400">
-                  {item.desc}
-                </p>
+                <h3 className="font-bold text-white mb-2">{item.title}</h3>
+                <p className="text-sm text-gray-400">{item.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -228,9 +244,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="section-title mb-3">How It Works</h2>
-            <p className="text-gray-400">
-              Book your car in 3 simple steps
-            </p>
+            <p className="text-gray-400">Book your car in 3 simple steps</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {HOW_STEPS.map((step, i) => (
@@ -284,9 +298,7 @@ export default function Home() {
                     {t.name[0]}
                   </div>
                   <div>
-                    <p className="font-semibold text-sm text-white">
-                      {t.name}
-                    </p>
+                    <p className="font-semibold text-sm text-white">{t.name}</p>
                     <p className="text-xs text-gray-400">{t.city}</p>
                   </div>
                 </div>
@@ -318,12 +330,8 @@ export default function Home() {
                     size={16}
                   />
                   <div>
-                    <h4 className="font-semibold text-white mb-1">
-                      {faq.q}
-                    </h4>
-                    <p className="text-sm text-gray-400">
-                      {faq.a}
-                    </p>
+                    <h4 className="font-semibold text-white mb-1">{faq.q}</h4>
+                    <p className="text-sm text-gray-400">{faq.a}</p>
                   </div>
                 </div>
               </motion.div>
@@ -344,10 +352,7 @@ export default function Home() {
             <p className="text-gray-400 text-lg mb-8">
               Join 10,000+ customers who trust DriveLux for their travels.
             </p>
-            <Link
-              to="/cars"
-              className="btn-primary text-lg py-4 px-10"
-            >
+            <Link to="/cars" className="btn-primary text-lg py-4 px-10">
               Find Your Car Now
             </Link>
           </motion.div>
